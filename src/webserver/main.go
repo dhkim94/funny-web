@@ -20,9 +20,9 @@ const (
 
 func main() {
 	env.Init(configDir, configFile)
-	LOG := env.GetLogger()
+	slog := env.GetLogger()
 
-	LOG.Info("===== start funny web =====")
+	slog.Info("===== start funny web =====")
 
 	mx := mux.NewRouter()
 
@@ -30,10 +30,10 @@ func main() {
 
 	port := fmt.Sprintf("%s", env.GetConfig("server.port"))
 
-	LOG.Info("http server listen port [%s]", port)
+	slog.Info("http server listen port [%s]", port)
 
 	err := http.ListenAndServe(":" + port, mx)
 	if err != nil {
-		LOG.Error("failed http server listen port [%s]", port)
+		slog.Error("failed http server listen port [%s]", port)
 	}
 }
