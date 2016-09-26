@@ -94,11 +94,11 @@ func (l *Cklogger) Output(level int, format string, v ...interface{}) error {
 
 	if len(l.path) > 0 {
 		ctm.SetFormat("YYYYMMDD")
-		l.path = l.path + "." + ctm.ToString()
+		_path := l.path + "." + ctm.ToString()
 
-		fd, err := os.OpenFile(l.path, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0644)
+		fd, err := os.OpenFile(_path, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0644)
 		if err != nil {
-			log.Printf("failed to open log file [%s], error [%s]", l.path, err)
+			log.Printf("failed to open log file [%s], error [%s]", _path, err)
 			return err
 		}
 		defer fd.Close()
