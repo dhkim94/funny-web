@@ -2,7 +2,10 @@ package main
 
 import (
 	"fmt"
-	ev "env"
+	"env"
+	"github.com/gorilla/mux"
+	"net/http"
+	"token"
 )
 
 
@@ -11,16 +14,26 @@ const (
 	configDir	= "/Users/dhkim/Documents/Develop/project.my/funny-web"
 )
 
+const (
+	URL_ROOT	= "/"
+)
+
 func main() {
-	ev.Init(configDir, configFile)
+	env.Init(configDir, configFile)
+	LOG := env.GetLogger()
 
+	LOG.Info("===== start funny web =====")
 
-	fmt.Println("----- main")
+	mx := mux.NewRouter()
 
-	//tm := time.Now()
-	//ctm := cktime.NewCktime(tm, "YYYYMMDD")
-	//fmt.Println(ctm.ToString())
+	mx.HandleFunc(URL_ROOT, token.Issue)
 
-	ev.LOG.Info("----info log in main 123 [%d]", 1)
+	port := fmt.Sprintf("%s", env.GetConfig("server.port"))
 
+	LOG.Info("http server listen port [%s]", port)
+
+	err := http.ListenAndServe(":" + port, mx)
+	if err != nil {
+		LOG.Error("failed http server listen port [%s]", port)
+	}
 }
