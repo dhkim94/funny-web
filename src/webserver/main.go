@@ -11,7 +11,7 @@ import (
 
 const (
 	configFile	= "config"
-	configDir	= "/Users/dhkim/Documents/Develop/project.my/funny-web"
+	configDir	= "/home/dhkim/funny-web"
 )
 
 const (
