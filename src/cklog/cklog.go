@@ -162,6 +162,6 @@ func (l *Cklogger) Warn(format string, v ...interface{}) {
 	l.Output(WarnLevel, format, v...)
 }
 
-func (l *Cklogger) Error(format string, v ...interface{}) {
+func (l *Cklogger) Err(format string, v ...interface{}) {
 	l.Output(ErrLevel, format, v...)
 }

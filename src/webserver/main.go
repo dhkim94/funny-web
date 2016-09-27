@@ -34,6 +34,6 @@ func main() {
 
 	err := http.ListenAndServe(":" + port, mx)
 	if err != nil {
-		slog.Error("failed http server listen port [%s]", port)
+		slog.Err("failed http server listen port [%s]", port)
 	}
 }

@@ -3,8 +3,14 @@
 [web]
 $ go get github.com/spf13/viper
 $ go get github.com/gorilla/mux
-$ go get github.com/yosssi/ace
 
 [mosquitto MQTT]
 $ go get github.com/eclipse/paho.mqtt.golang
 $ go get golang.org/x/net/websocket
+
+
+2. Etc
+[remove command]
+$ go clean -i -n github.com/yosssi/ace
+
+삭제 되어야 할 것이 출력되면 확인 후 손으로 지우도록 하자.
