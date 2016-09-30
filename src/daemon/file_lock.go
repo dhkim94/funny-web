@@ -9,6 +9,8 @@ import (
 
 var EWouldBlock = errors.New("File already locked another process")
 
+// 이러면 기본으로 제공하는 os.File 에 원하는 function 을 연결 할 수 있다.
+// 이 방법 좋네.
 type LockFile struct {
 	*os.File
 }
@@ -80,6 +82,31 @@ func (file *LockFile) WritePid() (err error) {
 	}
 
 	err = file.Sync()
+	return
+}
+
+// pid 파일에서 pid 를 구한다.
+func ReadPidFile(name string) (pid int, err error) {
+	var file *os.File
+	if file, err = os.OpenFile(name, os.O_RDONLY, 0640); err != nil {
+		return
+	}
+	defer file.Close()
+
+	lock := NewLockFile(file)
+	pid, err = lock.ReadPid()
+
+	return
+}
+
+// Pid 를 저장하고 있는 파일에서 pid 를 읽는다.
+func (file *LockFile) ReadPid() (pid int, err error) {
+	if _, err = file.Seek(0, os.SEEK_SET); err != nil {
+		return
+	}
+
+	_, err = fmt.Fscan(file, &pid)
+
 	return
 }
 
