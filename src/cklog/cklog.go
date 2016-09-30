@@ -8,12 +8,13 @@ import (
 	"time"
 	"os"
 	"log"
+	"bufio"
+	"bytes"
 )
 
 type Cklogger struct {
 	mu	sync.Mutex
 	out	io.Writer
-	pool	sync.Pool
 	level	int
 	path	string
 }
@@ -24,6 +25,8 @@ const (
 	WarnLevel
 	ErrLevel
 )
+
+var bufferPool *sync.Pool
 
 func NewLogger(level string, out string, path string) *Cklogger  {
 	var iLevel int
@@ -37,6 +40,12 @@ func NewLogger(level string, out string, path string) *Cklogger  {
 		iLevel = ErrLevel
 	default:
 		iLevel = DebugLevel
+	}
+
+	bufferPool = &sync.Pool{
+		New: func() interface{} {
+			return new(bytes.Buffer)
+		},
 	}
 
 	switch out {
@@ -89,9 +98,6 @@ func (l *Cklogger) Output(level int, format string, v ...interface{}) error {
 
 	format = fmt.Sprintf("%s %s %s", ctm.ToString(), slvl, format)
 
-	// TODO 이거 pool 로 바꾸는 것 찾아 보도록 하자.
-
-
 	if len(l.path) > 0 {
 		ctm.SetFormat("YYYYMMDD")
 		_path := l.path + "." + ctm.ToString()
@@ -103,33 +109,42 @@ func (l *Cklogger) Output(level int, format string, v ...interface{}) error {
 		}
 		defer fd.Close()
 
+		wb := bufio.NewWriter(fd)
+
+		buffer := bufferPool.Get().(*bytes.Buffer)
+		buffer.Reset()
+		defer bufferPool.Put(buffer)
+
 		if len(v) > 0 {
-			fd.WriteString(fmt.Sprintf(format+"\n", v...))
+			fmt.Fprintf(buffer, format+"\n", v...)
+			buffer.WriteTo(wb)
+
+			//wb.WriteString(fmt.Sprintf(format+"\n", v...))
 		} else {
-			fd.WriteString(fmt.Sprint(format+"\n"))
+			fmt.Fprintf(buffer, format+"\n")
+			buffer.WriteTo(wb)
+
+			//wb.WriteString(fmt.Sprint(format+"\n"))
 		}
+
+		wb.Flush()
 
 	} else {
-		//var buffer *bytes.Buffer
-		//var buffer = l.pool.Get().(*bytes.Buffer)
-		//buffer.Reset()
+		buffer := bufferPool.Get().(*bytes.Buffer)
+		buffer.Reset()
+		defer bufferPool.Put(buffer)
 
 		if len(v) > 0 {
-			//l.pool.Put([]byte(fmt.Sprintf(format+"\n", v...)))
+			fmt.Fprintf(buffer, format+"\n", v...)
+			buffer.WriteTo(l.out)
 
-			l.out.Write([]byte(fmt.Sprintf(format+"\n", v...)))
+			//l.out.Write([]byte(fmt.Sprintf(format+"\n", v...)))
 		} else {
-			//l.pool.Put([]byte(fmt.Sprint(format+"\n")))
+			fmt.Fprintf(buffer, format+"\n")
+			buffer.WriteTo(l.out)
 
-
-			l.out.Write([]byte(fmt.Sprint(format+"\n")))
+			//l.out.Write([]byte(fmt.Sprint(format+"\n")))
 		}
-
-		//fmt.Println("---[", buffer)
-
-
-		//l.out.Write(buffer)
-
 	}
 
 	return nil
@@ -147,6 +162,6 @@ func (l *Cklogger) Warn(format string, v ...interface{}) {
 	l.Output(WarnLevel, format, v...)
 }
 
-func (l *Cklogger) Error(format string, v ...interface{}) {
+func (l *Cklogger) Err(format string, v ...interface{}) {
 	l.Output(ErrLevel, format, v...)
 }

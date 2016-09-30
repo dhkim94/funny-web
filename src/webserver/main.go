@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"env"
 	"github.com/gorilla/mux"
 	"net/http"
@@ -28,12 +27,11 @@ func main() {
 
 	mx.HandleFunc(URL_ROOT, token.Issue)
 
-	port := fmt.Sprintf("%s", env.GetConfig("server.port"))
+	port := env.GetConfig("server.port")
 
 	slog.Info("http server listen port [%s]", port)
 
-	err := http.ListenAndServe(":" + port, mx)
-	if err != nil {
-		slog.Error("failed http server listen port [%s]", port)
+	if err := http.ListenAndServe(":" + port, mx); err != nil {
+		slog.Err("failed http server listen port [%s]", port)
 	}
 }
