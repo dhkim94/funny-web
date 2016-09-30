@@ -23,6 +23,8 @@ func setdata() {
 }
 
 func TestCreatePidFile(t *testing.T) {
+	setdata()
+
 	if _, err := CreatePidFile(invalidname, fileperm); err == nil {
 		t.Fatal("err1: ", err)
 	}
@@ -56,6 +58,8 @@ func TestCreatePidFile(t *testing.T) {
 
 
 func TestNewLockFile(t *testing.T) {
+	setdata()
+
 	fmt.Println("-----test NewFileLock")
 
 	file := NewLockFile(os.NewFile(1001, "/Users/dhkim/tmp/known_hosts"))
@@ -77,6 +81,8 @@ func TestNewLockFile(t *testing.T) {
 
 
 func TestGetFdName(t *testing.T) {
+	setdata()
+
 	name, err := GetFdName(0)
 	if err != nil {
 		t.Error(err)
