@@ -16,7 +16,13 @@ func TestNewFileLock(t *testing.T) {
 	fileLock.Remove()
 }
 
-
-func TestTest1(t *testing.T) {
-	fmt.Println("-----test test1")
+func TestGetFdName(t *testing.T) {
+	name, err := GetFdName(0)
+	if err != nil {
+		t.Error(err)
+	} else {
+		if name != "/dev/null" {
+			t.Errorf("Filename of fd 0: `%s`", name)
+		}
+	}
 }

@@ -7,7 +7,7 @@ import (
 
 // Non-block 파일 쓰기 Lock
 func lockFile(fd uintptr) error {
-	fmt.Println("----lockFile linux_adm64")
+	fmt.Println("----lockFile linux_amd64")
 
 	err := syscall.Flock(int(fd), syscall.LOCK_EX|syscall.LOCK_NB)
 	if err == syscall.EWOULDBLOCK {
@@ -17,7 +17,7 @@ func lockFile(fd uintptr) error {
 }
 
 func unlockFile(fd uintptr) error {
-	fmt.Println("----unlockFile linux_adm64")
+	fmt.Println("----unlockFile linux_amd64")
 
 
 	err := syscall.Flock(int(fd), syscall.LOCK_UN)
@@ -25,4 +25,27 @@ func unlockFile(fd uintptr) error {
 		err = EWouldBlock
 	}
 	return err
+}
+
+func getFdName(fd uintptr) (name string, err error) {
+	path := fmt.Sprintf("/proc/self/fd/%d", int(fd))
+
+	var (
+		fileInfo os.FileInfo
+		n int
+	)
+
+	if fileInfo, err = os.Lstat(path); err != nil {
+		return
+	}
+
+	buff := make([]byte, fileInfo.Size() + 1)
+
+	if n, err = syscall.Readlink(path, buff); err == nil {
+		name = string(buff[:n])
+	}
+
+	fmt.Println("-----name [", name, "]")
+
+	return
 }

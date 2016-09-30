@@ -35,7 +35,10 @@ func (fileLock *FileLock) Unlock() error {
 	return unlockFile(fileLock.Fd())
 }
 
-func Test1() {
-	fmt.Println("----- file lock test1")
+// 파일 descriptor 를 이용하여 파일명을 구한다.
+func GetFdName(fd uintptr) (name string, err error) {
+	return getFdName(fd)
 }
+
+
 
