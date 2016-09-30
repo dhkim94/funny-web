@@ -4,17 +4,68 @@ import (
 	"testing"
 	"fmt"
 	"os"
+	"io/ioutil"
 )
 
-func TestNewFileLock(t *testing.T) {
+var (
+	filename string		= os.TempDir() + "test.lock"
+	fileperm os.FileMode	= 0644
+	invalidname string	= "/a/b/c/d"
+)
+
+func TestCreatePidFile(t *testing.T) {
+	if _, err := CreatePidFile(invalidname, fileperm); err == nil {
+		t.Fatal("err1: ", err)
+	}
+
+	fmt.Println("> filename [", filename, "]")
+
+	lock, err := CreatePidFile(filename, fileperm)
+	if err != nil {
+		t.Fatal("err2: ", err)
+	}
+	defer lock.Remove()
+
+	data, err := ioutil.ReadFile(filename)
+	if err != nil {
+		t.Fatal("err3: ", err)
+	}
+
+	if string(data) != fmt.Sprint(os.Getpid()) {
+		t.Fatal("err4: pid not equal")
+	}
+
+	file, err := os.OpenFile(filename, os.O_RDONLY, fileperm)
+	if err != nil {
+		t.Fatal("err5: ", err)
+	}
+
+	if err = NewLockFile(file).WritePid(); err == nil {
+		t.Fatal("err6: ", err)
+	}
+}
+
+
+func TestNewLockFile(t *testing.T) {
 	fmt.Println("-----test NewFileLock")
 
-	fileLock := NewFileLock(os.NewFile(1001, "/Users/dhkim/tmp/aa1"))
-	fmt.Println(*fileLock.File)
-	fmt.Println(*fileLock)
+	file := NewLockFile(os.NewFile(1001, "/Users/dhkim/tmp/known_hosts"))
 
-	fileLock.Remove()
+	err := file.Remove()
+
+
+
+	if err != nil {
+		t.Fatal("Remove(): error invalid fd")
+	}
+
+
+
+
+
+
 }
+
 
 func TestGetFdName(t *testing.T) {
 	name, err := GetFdName(0)
@@ -28,6 +79,6 @@ func TestGetFdName(t *testing.T) {
 
 	name, err = GetFdName(1011)
 	if err == nil {
-		t.Errorf("detected invalid fd. name [%s]", name)
+		t.Errorf("GetFdName(): detected invalid fd. name [%s]", name)
 	}
 }
