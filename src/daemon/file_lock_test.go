@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"io/ioutil"
+	"runtime"
 )
 
 var (
@@ -12,6 +13,14 @@ var (
 	fileperm os.FileMode	= 0644
 	invalidname string	= "/a/b/c/d"
 )
+
+func setdata() {
+	if runtime.GOOS == "darwin" {
+		filename = os.TempDir() + "test.lock"
+	} else {
+		filename = os.TempDir() + "/test.lock"
+	}
+}
 
 func TestCreatePidFile(t *testing.T) {
 	if _, err := CreatePidFile(invalidname, fileperm); err == nil {
