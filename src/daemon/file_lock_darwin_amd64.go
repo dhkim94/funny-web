@@ -2,14 +2,12 @@ package daemon
 
 import (
 	"syscall"
-	"fmt"
-	"os"
+	"unsafe"
+	"bytes"
 )
 
 // Non-block 파일 쓰기 Lock
 func lockFile(fd uintptr) error {
-	fmt.Println("----lockFile darwin_amd64")
-
 	err := syscall.Flock(int(fd), syscall.LOCK_EX|syscall.LOCK_NB)
 	if err == syscall.EWOULDBLOCK {
 		err = EWouldBlock
@@ -18,9 +16,6 @@ func lockFile(fd uintptr) error {
 }
 
 func unlockFile(fd uintptr) error {
-	fmt.Println("----unlockFile darwin_amd64")
-
-
 	err := syscall.Flock(int(fd), syscall.LOCK_UN)
 	if err == syscall.EWOULDBLOCK {
 		err = EWouldBlock
@@ -29,24 +24,15 @@ func unlockFile(fd uintptr) error {
 }
 
 func getFdName(fd uintptr) (name string, err error) {
-	path := fmt.Sprintf("/proc/self/fd/%d", int(fd))
-
-	var (
-		fileInfo os.FileInfo
-		n int
-	)
-
-	if fileInfo, err = os.Lstat(path); err != nil {
+	_path := make([]byte, 64)
+	// 가장 마지막에 char* 가 들어가야 하기 때문에 slice 를 char* 로 변경하는 방법은 아래와 같다.
+	// 이거....찾기 무지 힘들었는데, 그냥 cgo 보고 연상할 것을 왜 생각 못 했는지...
+	if _, _, _errno := syscall.Syscall(syscall.SYS_FCNTL, uintptr(fd), syscall.F_GETPATH, uintptr(unsafe.Pointer(&_path[0]))); _errno != 0 {
+		err = _errno
 		return
 	}
 
-	buff := make([]byte, fileInfo.Size() + 1)
-
-	if n, err = syscall.Readlink(path, buff); err == nil {
-		name = string(buff[:n])
-	}
-
-	fmt.Println("-----name [", name, "]")
+	name = string(bytes.Trim(_path, "\x00"))
 
 	return
 }

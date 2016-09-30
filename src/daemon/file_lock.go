@@ -3,7 +3,7 @@ package daemon
 import (
 	"os"
 	"fmt"
-	"github.com/pkg/errors"
+	"errors"
 )
 
 var EWouldBlock = errors.New("File already locked another process")
