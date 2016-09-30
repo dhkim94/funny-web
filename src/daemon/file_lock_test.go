@@ -56,29 +56,20 @@ func TestCreatePidFile(t *testing.T) {
 	}
 }
 
-
 func TestNewLockFile(t *testing.T) {
 	setdata()
 
-	fmt.Println("-----test NewFileLock")
-
-	file := NewLockFile(os.NewFile(1001, "/Users/dhkim/tmp/known_hosts"))
-
-	err := file.Remove()
-
-
-
-	if err != nil {
-		t.Fatal("Remove(): error invalid fd")
+	lock := NewLockFile(os.NewFile(1001, ""))
+	err := lock.Remove()
+	if err == nil {
+		t.Fatal("case1: ", err)
 	}
 
-
-
-
-
-
+	err = lock.WritePid()
+	if err == nil {
+		t.Fatal("case2: ", err)
+	}
 }
-
 
 func TestGetFdName(t *testing.T) {
 	setdata()
@@ -97,3 +88,7 @@ func TestGetFdName(t *testing.T) {
 		t.Errorf("GetFdName(): detected invalid fd. name [%s]", name)
 	}
 }
+
+
+// todo 아래 더 진행 해야 한다.
+
