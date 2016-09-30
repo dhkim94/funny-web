@@ -46,7 +46,5 @@ func getFdName(fd uintptr) (name string, err error) {
 		name = string(buff[:n])
 	}
 
-	fmt.Println("-----name [", name, "]")
-
 	return
 }
