@@ -3,14 +3,32 @@ package env
 import (
 	"github.com/spf13/viper"
 	"fmt"
-	"log"
 	"cklog"
+	"path/filepath"
+	"strings"
 )
 
-var clog *cklog.Cklogger
-var conf *viper.Viper
+var (
+	clog *cklog.Cklogger
+	conf *viper.Viper
+)
 
-func Init(confDir string, confFile string) {
+func Init(confFileName string) bool {
+	confDir := filepath.Dir(confFileName)
+	baseName := strings.Split(filepath.Base(confFileName), ".")
+	baseNameLen := len(baseName)
+
+	if baseNameLen < 2 {
+		fmt.Printf("[FAIL] Invalid properties file: %s\n", confFileName)
+		return false
+	}
+
+	if baseName[baseNameLen - 1] != "properties" {
+		fmt.Printf("[FAIL] config file is not properties file: %s\n", confFileName)
+		return false
+	}
+
+	confFile := strings.Join(baseName[:baseNameLen - 1], ".")
 
 	conf = viper.New()
 	conf.SetConfigName(confFile)
@@ -18,10 +36,10 @@ func Init(confDir string, confFile string) {
 
 	err := conf.ReadInConfig()
 	if err != nil {
-		log.Fatalf("can't read config file [%s/%s.properties]",
-			confDir, confFile)
+		fmt.Printf("[FAIL] Not found config file: %s\n", confFileName)
+		return false
 	}
-	fmt.Printf("read config file [%s/%s.properties]\n", confDir, confFile);
+	//fmt.Printf("read config file [%s/%s.properties]\n", confDir, confFile);
 
 	logLevel := fmt.Sprintf("%s", conf.Get("log.level"))
 	logOut := fmt.Sprintf("%s", conf.Get("log.output"))
@@ -32,6 +50,8 @@ func Init(confDir string, confFile string) {
 
 	clog = cklog.NewLogger(logLevel, logOut,
 		fmt.Sprintf("%s", conf.Get("log.file")))
+
+	return true
 }
 
 func GetLogger() *cklog.Cklogger {
@@ -42,6 +62,6 @@ func GetConf() *viper.Viper {
 	return conf
 }
 
-func GetConfig(key string) string {
+func GetValue(key string) string {
 	return fmt.Sprintf("%s", conf.Get(key))
 }
