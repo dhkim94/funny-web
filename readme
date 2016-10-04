@@ -1,5 +1,8 @@
 1. Installation
 
+[daemon]
+$ go get github.com/kardianos/osext
+
 [web]
 $ go get github.com/spf13/viper
 $ go get github.com/gorilla/mux
@@ -12,5 +15,8 @@ $ go get golang.org/x/net/websocket
 2. Etc
 [remove command]
 $ go clean -i -n github.com/yosssi/ace
+
+[reference]
+- https://github.com/sevlyar/go-daemon
 
 삭제 되어야 할 것이 출력되면 확인 후 손으로 지우도록 하자.
