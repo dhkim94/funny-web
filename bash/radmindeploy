@@ -1,0 +1,7 @@
+#!/bin/sh
+
+GOPATH=/home/dhkim/funny-web
+
+echo "[step1] copy radmin properties"
+/bin/cp $GOPATH/radmin.properties
+
