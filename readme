@@ -6,6 +6,7 @@ $ go get github.com/kardianos/osext
 [web]
 $ go get github.com/spf13/viper
 $ go get github.com/gorilla/mux
+$ go get github.com/gorilla/websocket
 
 [mosquitto MQTT]
 $ go get github.com/eclipse/paho.mqtt.golang
@@ -20,3 +21,6 @@ $ go clean -i -n github.com/yosssi/ace
 - https://github.com/sevlyar/go-daemon
 
 삭제 되어야 할 것이 출력되면 확인 후 손으로 지우도록 하자.
+
+3. 데몬 프로세스 인스톨
+$ go install radmin
