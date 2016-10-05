@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# command description
+
+echo "+-------------------------------------+"
+echo "| Commands                            |"
+echo "+-------------------------------------+"
+echo "| radmindeploy : deploy radmin        |"
+echo "+-------------------------------------+"
