@@ -18,6 +18,7 @@ const (
 )
 
 func main() {
+	/*
 	env.Init(configDir, configFile)
 	slog := env.GetLogger()
 
@@ -34,4 +35,5 @@ func main() {
 	if err := http.ListenAndServe(":" + port, mx); err != nil {
 		slog.Err("failed http server listen port [%s]", port)
 	}
+	*/
 }
