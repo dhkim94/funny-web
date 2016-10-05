@@ -19,8 +19,8 @@ import (
 // 환경 파일과 환경 파일에서 프로세스명 읽어 오기 전에 사용할 프로세스명
 // 환경 파일을 읽어 온 이후에는 프로세스명은 환경 설정에 지정된 값을 사용 한다.
 const (
-	processName	= "ckadmin"
-	confFileName	= "/Users/dhkim/Documents/Develop/project.my/funny-web/ckadmin.properties"
+	processName	= "radmin"
+	confFileName	= "/Users/dhkim/Documents/Develop/project.my/funny-web/radmin.properties"
 )
 
 var (
@@ -135,7 +135,7 @@ func reloadHandler(sig os.Signal) error {
 	return nil
 }
 
-// ckadmin -c <start|stop|reload|status>
+// radmin -c <start|stop|reload|status>
 func main() {
 	//---------------------------------------
 	// 1. prepare environment
