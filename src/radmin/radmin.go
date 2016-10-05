@@ -20,7 +20,7 @@ import (
 // 환경 파일을 읽어 온 이후에는 프로세스명은 환경 설정에 지정된 값을 사용 한다.
 const (
 	processName	= "radmin"
-	confFileName	= "/Users/dhkim/Documents/Develop/project.my/funny-web/radmin.properties"
+	confFileName	= "/data/daemons/radmin/conf/radmin.properties"
 )
 
 var (
