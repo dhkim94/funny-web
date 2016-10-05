@@ -5,16 +5,16 @@ package main
 // 2. 관리자 웹 서비스
 
 import (
-	"env"
+	"cklib/env"
 	"flag"
 	"fmt"
-	"daemon"
+	"cklib/daemon"
 	"syscall"
 	"os"
 	"strconv"
 	"github.com/gorilla/mux"
 	"net/http"
-	"cktest"
+	"ckweb/cktest"
 )
 
 // NOTE 다른 데몬 프로세스를 만들때 변경 할 곳

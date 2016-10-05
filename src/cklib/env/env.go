@@ -3,7 +3,7 @@ package env
 import (
 	"github.com/spf13/viper"
 	"fmt"
-	"cklog"
+	"cklib/cklog"
 	"path/filepath"
 	"strings"
 )

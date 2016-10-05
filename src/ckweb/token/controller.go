@@ -2,8 +2,8 @@ package token
 
 import (
 	"net/http"
-	"view"
-	"env"
+	"ckweb/view"
+	"cklib/env"
 )
 
 type Sam struct {

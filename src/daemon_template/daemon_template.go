@@ -5,10 +5,10 @@ package main
 // 템플릿을 그대로 복사 후에 NOTE 단어로 검색하여 나오는 곳 들이 변경 할 곳이니 상황에 맞게 변경 하면 된다.
 
 import (
-	"env"
+	"cklib/env"
 	"flag"
 	"fmt"
-	"daemon"
+	"cklib/daemon"
 	"syscall"
 	"os"
 	"strconv"
