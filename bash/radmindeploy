@@ -8,7 +8,7 @@ echo "[step1] copy radmin properties"
 /bin/cp -rf $GOPATH/radmin.properties /data/daemons/radmin/conf
 
 echo "[step2] copy radmin html template"
-/bin/cp -rf $GOPATH/tmpl/* /data/daemons/radmin/resources/tmpl
+/bin/cp -rf $GOPATH/resources/tmpl/* /data/daemons/radmin/tmpl
 
 echo "[step3] copy radmin bin"
 /bin/cp -rf $GOPATH/bin/radmin ~/bin
