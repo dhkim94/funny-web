@@ -27,7 +27,7 @@ func upsertHtmlText(filePath string) (out *string, oerr error) {
 	}
 
 	slog := env.GetLogger()
-	tmplPath := env.GetConfig("template.path")
+	tmplPath := env.GetValue("template.path")
 
 	fullPath := tmplPath + "/" + filePath
 

@@ -103,10 +103,29 @@ func prepare() bool {
 // NOTE 다른 데몬 프로세스를 만들때 변경 할 곳
 // 데몬 프로세스 로직
 func worker() {
+	slog := env.GetLogger()
+
 	for {
 		time.Sleep(time.Second)
 
 		fmt.Println("---loop")
+
+		// terminateHandler 에서 stop 신호를 받아서 worker 를 빠져 나간다.
+
+		// 이건 non-block code
+		select {
+		case <-stop:
+			slog.Info("stop non-block worker")
+		default:
+			slog.Info("continue non-block worker")
+		}
+
+		// 이건 block code
+		//if _, ok := <-stop; ok {
+		//	slog.Info("run block worker")
+		//	break
+		//}
+
 	}
 
 }
@@ -118,6 +137,13 @@ func terminateHandler(sig os.Signal) error {
 	slog := env.GetLogger()
 	slog.Debug("start terminate handler")
 
+	// worker 에게 멈추라고 신호를 준다.
+	stop <- struct {}{}
+
+	if sig == syscall.SIGTERM {
+	//if sig == syscall.SIGQUIT {
+		<- done
+	}
 
 	slog.Debug("complete terminate handler")
 

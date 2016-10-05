@@ -12,7 +12,9 @@ import (
 	"syscall"
 	"os"
 	"strconv"
-	"time"
+	"github.com/gorilla/mux"
+	"net/http"
+	"cktest"
 )
 
 // NOTE 다른 데몬 프로세스를 만들때 변경 할 곳
@@ -100,13 +102,32 @@ func prepare() bool {
 	return true
 }
 
+const (
+	URL_ROOT	= "/"
+)
+
 // NOTE 다른 데몬 프로세스를 만들때 변경 할 곳
 // 데몬 프로세스 로직
 func worker() {
-	for {
-		time.Sleep(time.Second)
+	slog := env.GetLogger()
 
+	for {
 		fmt.Println("---loop")
+
+		mx := mux.NewRouter()
+
+		mx.HandleFunc(URL_ROOT, cktest.Test1)
+
+		port := env.GetValue("http.port")
+
+		slog.Info("http server listen port [%s]", port)
+
+		// 여기서 block 이 걸린다.
+		// 만일 http 서버 listen 에러 발생한다면 worker 를 빠져 나가고 프로세스는 suspend 된다.
+		if err := http.ListenAndServe(":" + port, mx); err != nil {
+			slog.Err("failed http server listen port [%s]", port)
+			break
+		}
 	}
 
 }
