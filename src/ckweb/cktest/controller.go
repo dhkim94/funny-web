@@ -2,8 +2,8 @@ package cktest
 
 import (
 	"net/http"
-	"env"
-	"view"
+	"cklib/env"
+	"ckweb/view"
 )
 
 func Test1(w http.ResponseWriter, r *http.Request) {

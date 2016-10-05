@@ -4,7 +4,7 @@ import (
 	"sync"
 	"io"
 	"fmt"
-	"cktime"
+	"cklib/cktime"
 	"time"
 	"os"
 	"log"
