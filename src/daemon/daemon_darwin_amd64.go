@@ -60,6 +60,8 @@ func (d *Context) parent() (child *os.Process, err error) {
 	attr := &os.ProcAttr{
 		Dir:   d.WorkDir,
 		Env:   d.Env,
+		// The first three entries correspond to standard input,
+		// standard output, and standard error
 		Files: d.files(),
 		Sys: &syscall.SysProcAttr{
 			//Chroot:     d.Chroot,
@@ -94,10 +96,12 @@ func (d *Context) child() (err error) {
 		return
 	}
 
+	// fd 0 을 닫는다.
 	if err = syscall.Close(0); err != nil {
 		return
 	}
 
+	// fd 0 을 fd 3 으로 바꾼다.
 	if err = syscall.Dup2(3, 0); err != nil {
 		return
 	}

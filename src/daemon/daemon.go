@@ -48,6 +48,7 @@ type Context struct {
 
 	abspath  string
 	pidFile  *LockFile
+	stdoutFile *os.File
 	logFile  *os.File
 	nullFile *os.File
 
