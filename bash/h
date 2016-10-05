@@ -5,5 +5,6 @@
 echo "+-------------------------------------+"
 echo "| Commands                            |"
 echo "+-------------------------------------+"
+echo "| radmin       : radmin daemon binary |"
 echo "| radmindeploy : deploy radmin        |"
 echo "+-------------------------------------+"
