@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# radmin log tail
+
+/usr/bin/tail -f /home/dhkim/log/daemons/radmin/radmin.log
