@@ -24,7 +24,13 @@
                 if (!msg.value) {
                     return false;
                 }
+
+                console.log('----- try send msg [' + msg.value + ']');
+
                 conn.send(msg.value);
+
+                console.log('----- complete send msg [' + msg.value + ']');
+
                 msg.value = "";
                 return false;
             };
@@ -33,18 +39,38 @@
                 conn = new WebSocket("ws://localhost:8000/ws");
 
                 conn.onclose = function (evt) {
+
+                    console.log('----- ws onclose');
+
                     var item = document.createElement("div");
                     item.innerHTML = "<b>Connection closed.</b>";
                     appendLog(item);
                 };
 
                 conn.onmessage = function (evt) {
+
+                    console.log('----- ws onmessage');
+
                     var messages = evt.data.split('\n');
                     for (var i = 0; i < messages.length; i++) {
                         var item = document.createElement("div");
                         item.innerText = messages[i];
                         appendLog(item);
                     }
+                };
+
+                // ws 에 연결 되었을때 발생
+                conn.onopen = function(evt) {
+
+                    console.log('----- ws onopen');
+
+
+                };
+
+                conn.onerror = function() {
+
+                    console.log('----- ws onerror. args len [' + arguments.length + ']');
+
                 };
 
             } else {

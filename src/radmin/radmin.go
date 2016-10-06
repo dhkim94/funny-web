@@ -15,6 +15,9 @@ import (
 	"github.com/gorilla/mux"
 	"net/http"
 	"ckweb/cktest"
+	"ckweb/wscok"
+	"cklib/ckwebsocket"
+	"math"
 )
 
 // NOTE 다른 데몬 프로세스를 만들때 변경 할 곳
@@ -104,6 +107,11 @@ func prepare() bool {
 
 const (
 	URL_ROOT	= "/"
+	URL_WS_DEFAULT	= "/ws"
+)
+
+const (
+	WS_ROOM_NAME_DEFAULT	= "_wsRoom"
 )
 
 // NOTE 다른 데몬 프로세스를 만들때 변경 할 곳
@@ -111,12 +119,31 @@ const (
 func worker() {
 	slog := env.GetLogger()
 
+	// ws default 에 붙는 모든 client 들이 가입되는 room
+	wsDefaultRootRoom := ckwebsocket.NewRoom(WS_ROOM_NAME_DEFAULT)
+	go wsDefaultRootRoom.Run()
+
+	// ws client 들의 serial number
+	var wsClientSn uint64 = 1
+
 	for {
-		fmt.Println("---loop")
+		slog.Debug("run daemon loop")
+
+
 
 		mx := mux.NewRouter()
 
 		mx.HandleFunc(URL_ROOT, cktest.Test1)
+		mx.HandleFunc(URL_WS_DEFAULT, func(w http.ResponseWriter, r *http.Request) {
+			// 내부에서 편하게 사용하기 위해서 client id 를 설정 한다.
+			if wsClientSn >= math.MaxUint64 - 1 {
+				wsClientSn = 1
+			} else {
+				wsClientSn += 1
+			}
+
+			wsock.WsDefaultConnect(wsDefaultRootRoom, wsClientSn, w, r)
+		})
 
 		port := env.GetValue("http.port")
 
